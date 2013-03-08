@@ -58,9 +58,9 @@ def log(message) :
   print datetime.utcnow(), message
 
 def run(cmd) :
-  reset_nikon()
+  reset_camera()
   
-  # try running the command once and if it fails, reset_nikon
+  # try running the command once and if it fails, reset_camera
   # and then try once more
   for i in range(2) :
     log("running %s" % cmd)
@@ -101,11 +101,11 @@ def run(cmd) :
         # other error like tried to delete a file where there was none, etc
         return ret, stdout, stderr
     else :
-      reset_nikon()
+      reset_camera()
   
   return ret, stdout, stderr
 
-def reset_nikon() :
+def reset_camera() :
   log('reset usb')
   
   ret = os.popen('lsusb').read()
@@ -200,7 +200,7 @@ while True :
   # remove the picture from camera memory since there isn't much there
   # doing this even if we're waiting for the sun, hoping that it will keep
   # the camera awake
-  reset_nikon()
+  reset_camera()
   delete_picture()
   
   # wait for 1 minute
