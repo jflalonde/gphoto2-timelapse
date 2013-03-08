@@ -191,8 +191,8 @@ while True :
   t = datetime.utcnow()
   
   # only take pictures when it is light out
-  if sun.is_light(t) or ignore_sun:
-    reset_nikon()
+  if (not ignore_sun) and sun.is_light(t):
+    reset_camera()
     take_picture()
   else :
     print "Waiting for the sun to come out"  
