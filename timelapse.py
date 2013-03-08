@@ -108,8 +108,6 @@ def run(cmd) :
 def reset_nikon() :
   log('reset usb')
   
-  import os
-  
   ret = os.popen('lsusb').read()
   for line in ret.split('\n') :
     if 'Nikon' not in line : continue
@@ -124,7 +122,7 @@ def list_files() :
   folder = ''
   files = []
   
-  ret, stdout, _ = run('gphoto2 --list-files')
+  stdout, _ = run('gphoto2 --list-files')
   for line in stdout.split('\n') :
     if not line : continue
     
@@ -137,7 +135,7 @@ def list_files() :
         if folder[-1] != '/' :
           folder += '/'
       else :
-        log('warning, unkown output of --list-files: ' + line)
+        log('warning, unknown output of --list-files: ' + line)
   
   return files
 
@@ -150,7 +148,7 @@ def take_picture(filename = None) :
   if workaround :
     # this works around --capture-image-and-download not working
     # get rid of any existing files on the card
-    for folder, number, _ in list_files() :
+    for folder, _ in list_files() :
       delete_picture(from_folder = folder)
     
     # take the picture
