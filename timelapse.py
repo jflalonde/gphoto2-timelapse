@@ -66,7 +66,7 @@ def run(cmd) :
     log("running %s" % cmd)
     
     p = subprocess.Popen(
-      'sudo ' + cmd,
+      cmd,
       shell=True,
       stdout=subprocess.PIPE,
       stderr=subprocess.PIPE,
