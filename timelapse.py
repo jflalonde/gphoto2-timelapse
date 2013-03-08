@@ -22,6 +22,9 @@ picture_folder = '/home/pi/gphoto2-timelapse/photos'
 DEBUG = False
 ignore_sun = True
 
+# specify the path to the gphoto2 executable
+gphoto2Executable = '/usr/local/bin/gphoto2'
+
 def parse_int(s) :
   try :
     return int(s)
@@ -152,38 +155,38 @@ def take_picture(filename = None) :
       delete_picture(from_folder = folder)
     
     # take the picture
-    run("gphoto2 --capture-image")
+    run(gphoto2Executable + " --capture-image")
     
     # copy the picture from the camera to local disk
-    run("gphoto2 --get-file=1 --filename=%s/%s" % (picture_folder, filename))
+    run(gphoto2Executable + " --get-file=1 --filename=%s/%s" % (picture_folder, filename))
     
     ## delete file off of camera
     #delete_picture()
   else :
-    return run("gphoto2 --capture-image-and-download --filename %s/%s" % (picture_folder, filename))
+    return run(gphoto2Executable + " --capture-image-and-download --filename %s/%s" % (picture_folder, filename))
 
 def delete_picture(from_folder = None) :
   log('deleting picture')
   
   if from_folder :
     print 'from_folder', from_folder
-    ret, stdout, stderr = run("gphoto2 --delete-file=1 --folder=%s" % from_folder)
+    ret, stdout, _ = run(gphoto2Executable + " --delete-file=1 --folder=%s" % from_folder)
     if 'There are no files in folder' in stdout :
       return ret
   
   # try deleting from all 3 known folders, in the order of most likely
-  ret, stdout, stderr = run("gphoto2 --delete-file=1 --folder=/store_00010001")
+  ret, stdout, stderr = run(gphoto2Executable + " --delete-file=1 --folder=/store_00010001")
   if 'There are no files in folder' in stderr :
-    ret, stdout, stderr = run("gphoto2 --delete-file=1 --folder=/store_00010001/DCIM/100NIKON")
+    ret, stdout, stderr = run(gphoto2Executable + " --delete-file=1 --folder=/store_00010001/DCIM/100NIKON")
     if 'There are no files in folder' in stderr :
-      ret, stdout, stderr = run("gphoto2 --delete-file=1 --folder=/")
+      ret, stdout, stderr = run(gphoto2Executable + " --delete-file=1 --folder=/")
   
   return ret
 
 def reset_settings() :
   log('reseting settings')
-  run("gphoto2 --set-config /main/capturesettings/flashmode=1")
-  run("gphoto2 --set-config /main/capturesettings/focusmode=0")
+  run(gphoto2Executable + " --set-config /main/capturesettings/flashmode=1")
+  run(gphoto2Executable + " --set-config /main/capturesettings/focusmode=0")
 
 reset_settings()
 
