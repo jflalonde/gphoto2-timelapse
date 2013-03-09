@@ -61,7 +61,7 @@ def log(message) :
   print datetime.utcnow(), message
 
 def run(cmd) :
-  reset_camera()
+  # reset_camera()
   
   # try running the command once and if it fails, reset_camera
   # and then try once more
@@ -103,9 +103,7 @@ def run(cmd) :
       else :
         # other error like tried to delete a file where there was none, etc
         return ret, stdout, stderr
-    else :
-      reset_camera()
-  
+    
   return ret, stdout, stderr
 
 def reset_camera() :
@@ -203,7 +201,7 @@ while True :
   # remove the picture from camera memory since there isn't much there
   # doing this even if we're waiting for the sun, hoping that it will keep
   # the camera awake
-  reset_camera()
+  # reset_camera()
   delete_picture()
   
   # wait for 1 minute
