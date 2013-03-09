@@ -6,24 +6,48 @@ TODO:
 * slow down interval at night
 * do an image diff between the past few images to see how fast things are
   changing.  If they are changing slowly, slow down the interval
+* fix how the delay is computed (should just compute the time to sleep 
+  directly instead of waiting by increments of 1 minute)
 """
 
 from datetime import datetime, timedelta
 import os
 import time
 import subprocess
+import sys
+from Shoot import Shoot
 
 import sun
 
 # the time between photos
 #DELTA = timedelta(seconds = 20)
-DELTA = timedelta(minutes = 5)
-picture_folder = '/home/pi/gphoto2-timelapse/photos'
+#DELTA = timedelta(minutes = 5)
+#picture_folder = '/home/pi/gphoto2-timelapse/photos'
 DEBUG = False
-ignore_sun = True
+#ignore_sun = True
 
 # specify the path to the gphoto2 executable
 gphoto2Executable = '/usr/local/bin/gphoto2'
+
+def usage():
+  """ Prints usage information """
+  print 'Usage: timelapse.py config.xml'
+  
+  
+if len(sys.argv) < 2:
+  # check if we're given an XML file.
+  usage()
+  
+# create a default Shoot object, read the XML file
+shootInfo = Shoot()
+shootInfo.fromXMLFile(sys.argv[1])
+
+# Display high-level information
+print 'Taking a total of ' + str(shootInfo.nbShots) + ' shots, and waiting ' + \
+str(shootInfo.delay) + ' minutes between each shot'
+print 'Each shot will have  ' + str(len(shootInfo.exposures)) + ' exposure(s)'
+
+
 
 def parse_int(s) :
   try :
@@ -41,7 +65,7 @@ def get_prefix() :
   """
   
   import glob
-  filenames = glob.glob(picture_folder+'*.jpg')
+  filenames = glob.glob(shootInfo.folder + '*.jpg')
   max_prefix = 0
   for filename in filenames :
     parts = filenames.split('_')
@@ -109,6 +133,7 @@ def run(cmd) :
 def reset_camera() :
   log('reset usb')
   
+  # not sure what the 'lsusb' command does...
   ret = os.popen('lsusb').read()
   for line in ret.split('\n') :
     if 'Nikon' not in line : continue
@@ -156,12 +181,12 @@ def take_picture(filename = None) :
     run(gphoto2Executable + " --capture-image")
     
     # copy the picture from the camera to local disk
-    run(gphoto2Executable + " --get-file=1 --filename=%s/%s" % (picture_folder, filename))
+    run(gphoto2Executable + " --get-file=1 --filename=%s/%s" % (shootInfo.folder, filename))
     
     ## delete file off of camera
     #delete_picture()
   else :
-    return run(gphoto2Executable + " --capture-image-and-download --filename %s/%s" % (picture_folder, filename))
+    return run(gphoto2Executable + " --capture-image-and-download --filename %s/%s" % (shootInfo.folder, filename))
 
 def delete_picture(from_folder = None) :
   log('deleting picture')
@@ -192,12 +217,12 @@ while True :
   t = datetime.utcnow()
   
   # only take pictures when it is light out
-  if (not ignore_sun) and sun.is_light(t):
-    reset_camera()
+  if (not shootInfo.ignoreSun) and sun.is_light(t):
+    # reset_camera()
     take_picture()
   else :
-    print "Waiting for the sun to come out"  
-  
+    print "Waiting for the sun to come out"
+      
   # remove the picture from camera memory since there isn't much there
   # doing this even if we're waiting for the sun, hoping that it will keep
   # the camera awake
@@ -207,6 +232,6 @@ while True :
   # wait for 1 minute
   # we can't just do sleep(5 * 60) because taking the picture takes time
   print datetime.utcnow(), 'waiting ...'
-  while datetime.utcnow() < t + DELTA :
+  while datetime.utcnow() < t + shootInfo.delay :
     time.sleep(1)
 
