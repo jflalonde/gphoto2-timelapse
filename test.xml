@@ -1,11 +1,16 @@
 <shoot folder="~" nbShots="1" delay="1" ignoreSun="true">
-  <!-- Those config settings below are camera-specific. --> 
+  <!-- List of configuration settings to be applied once, at the very beginning of the shoot -->
+  <init>
+    <config name="/main/imgsettings/iso" value="100" /> <!-- Set ISO -->
+    <config name="/main/imgsettings/imageformat" value="20" /> <!-- Capture RAW files -->
+  </init>
+  <!-- Now the configuration to be set prior to each exposure --> 
   <exposure>
     <config name="/main/capturesettings/aperture" value="8" />
-    <config name="/main/capturesettings/shutterspeed" value="45" /> <!-- 1/1000 -->
+    <config name="/main/capturesettings/shutterspeed" value="1/1000" />
   </exposure>
   <exposure>
     <config name="/main/capturesettings/aperture" value="10" />
-    <config name="/main/capturesettings/shutterspeed" value="42" /> <!-- 1/500 --> 
+    <config name="/main/capturesettings/shutterspeed" value="1/500" /> 
   </exposure>
 </shoot>

@@ -12,23 +12,26 @@ class Shoot(object):
   """ Stores information relative to a shoot. See the file config-example.txt for valid XML files. """
 
   def __init__(self, folder = '.', nbShots = float('inf'), delay = 1, 
-               ignoreSun = True, exposures = []):
+               ignoreSun = True, exposures = [], initConfig = []):
     """ Constructor """
     
     # shoot properties
-    self.folder = folder;
+    self.folder = folder
     
     # number of exposure to take for each shot
-    self.nbShots = nbShots;
+    self.nbShots = nbShots
     
     # delay (in minutes) to wait in between shots
-    self.delay = timedelta(minutes = delay);
+    self.delay = timedelta(minutes = delay)
     
     # whether to ignore the sun or not
-    self.ignoreSun = bool(ignoreSun);
+    self.ignoreSun = bool(ignoreSun)
     
     # list of exposures
-    self.exposures = exposures;
+    self.exposures = exposures
+    
+    # list of initialization configuration
+    self.initConfig = initConfig
     
   def fromXMLElement(self, xmlElement):
     # read attributes from the note (if available)
@@ -56,6 +59,18 @@ class Shoot(object):
       exp.fromXMLElement(node)
       self.exposures.append(exp)
       
+    # read all the initialization configuration settings
+    initNodes = xmlElement.getElementsByTagName('init')
+    if len(initNodes) > 1:
+      raise RuntimeError('Must have one (or zero) init node in the XML file. Found %d', len(initNodes))
+    
+    if len(initNodes) > 0:
+      initConfigNodes = initNodes[0].getElementsByTagName('config')
+      for node in initConfigNodes:
+        config = Configuration()
+        config.fromXMLElement(node)
+        self.initConfig.append(config)
+      
   def fromXMLFile(self, xmlFilename):
     """ Loads shoot information from an XML file """
     xmlDocument = xml.dom.minidom.parse(xmlFilename)
@@ -67,7 +82,7 @@ class Shoot(object):
     self.fromXMLElement(shootElements[0])
     xmlDocument.unlink()
   
-  def toGphoto2Call(self, gphoto2Executable):
+  def toGphotoCaptureCall(self, gphoto2Executable):
     """ Generates a gphoto2 call for the current shoot """
     call = gphoto2Executable + " "
     
@@ -84,6 +99,19 @@ class Shoot(object):
     filename = os.path.join(self.folder, self.getFilename())
     call = call + "--filename " + filename + "_%03n.cr2"
       
+    return call
+  
+  def toGphotoInitCall(self, gphoto2Executable):
+    """ Generates a gphoto2 call to initialize """
+    call = ''
+    
+    if len(self.initConfig) > 0:
+      call = gphoto2Executable + " "
+      
+      for config in self.initConfig:
+        if config.name != None:
+          call = call + "--set-config " + config.name + "=" + config.value + " "
+          
     return call
   
   def getFilename(self):

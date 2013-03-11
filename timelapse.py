@@ -81,7 +81,7 @@ def run(cmd) :
 
 def takeShot(filename = None) :
   logger.info('Taking %d exposure(s)', len(shootInfo.exposures))
-  call = shootInfo.toGphoto2Call(gphoto2Executable)
+  call = shootInfo.toGphotoCaptureCall(gphoto2Executable)
   
   run(call)
   
@@ -107,10 +107,8 @@ def initialize() :
   logger.info('Camera in manual mode')
     
   # capture full-resolution RAW files
-  run(gphoto2Executable + " --set-config /main/imgsettings/imageformat=20")
-  
-  # set ISO
-  run(gphoto2Executable + " --set-config /main/imgsettings/iso=100")
+  call = shootInfo.toGphotoInitCall(gphoto2Executable)
+  run(call)
   
   # TODO: set white balance
 
