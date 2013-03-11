@@ -5,6 +5,7 @@ Created on Mar 8, 2013
 '''
 
 import xml.dom.minidom
+import os.path
 from datetime import datetime, timedelta
 
 class Shoot(object):
@@ -80,7 +81,7 @@ class Shoot(object):
       call = call + "--capture-image-and-download --force-overwrite "
       
     # set the filename
-    filename = self.getFilename()
+    filename = os.path.join(self.folder, self.getFilename())
     call = call + "--filename " + filename + "_%03n.cr2"
       
     return call
