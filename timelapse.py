@@ -16,15 +16,24 @@ import subprocess
 import sys
 from Shoot import Shoot
 
+import logging
 import sun
 
-# the time between photos
-#DELTA = timedelta(seconds = 20)
-#DELTA = timedelta(minutes = 5)
 DEBUG = False
 
 # specify the path to the gphoto2 executable
 gphoto2Executable = '/usr/local/bin/gphoto2'
+
+# setup logger
+logger = logging.getLogger('DownloadImagesThreads')
+logger.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    
+# setup console handler
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 def usage():
   """ Prints usage information """
@@ -40,19 +49,16 @@ shootInfo = Shoot()
 shootInfo.fromXMLFile(sys.argv[1])
 
 # Display high-level information
-print 'Taking a total of ' + str(shootInfo.nbShots) + ' shots, and waiting ' + \
-str(shootInfo.delay) + ' minutes between each shot'
-print 'Each shot will have ' + str(len(shootInfo.exposures)) + ' exposure(s)'
-
-def log(message) :
-  print datetime.utcnow(), message
+logger.info('Taking a total of %d shots, and waiting %s minutes between each shot', 
+            shootInfo.nbShots, str(shootInfo.delay))
+logger.info('Each shot will have %d exposure(s)', len(shootInfo.exposures))
 
 def run(cmd) :
   # reset_camera()
   
   # try running the command once and if it fails, reset_camera
   # and then try once more
-  log("running %s" % cmd)
+  logger.debug("running %s" % cmd)
     
   if not DEBUG: 
     p = subprocess.Popen(cmd, shell=True,
@@ -66,22 +72,22 @@ def run(cmd) :
       
     if ret == 1:
       if 'No camera found' in stderr:
-        raise RuntimeError('Error talking to the camera: ' + stderr)
+        raise RuntimeError('Error talking to the camera: %s', stderr)
       
     return stdout
   
   return ''
 
 def takeShot(filename = None) :
-  log('taking picture')
+  logger.info('Taking %d exposure(s)', len(shootInfo.exposures))
   call = shootInfo.toGphoto2Call(gphoto2Executable)
   
   run(call)
   
-  log('Image(s) saved to ' + shootInfo.folder)
+  logger.info('Image(s) saved to %s', shootInfo.folder)
   
 def initialize() :
-  log('Initializing settings')
+  logger.info('Initializing settings')
   
   # First, in Mac OSX, disable the PTPCamera process
   run("killall PTPCamera")
@@ -91,13 +97,13 @@ def initialize() :
   out = run(gphoto2Executable + " --get-config /main/capturesettings/picturestyle")
   if not 'Current: Faithful' in out:
     raise RuntimeError('Camera needs to be set in the "Faithful" picture style')
-  log('Camera in the faithful picture style')
+  logger.info('Camera in the faithful picture style')
   
   # we should also check whether we are in 'M' mode 
   out = run(gphoto2Executable + " --get-config /main/capturesettings/autoexposuremode")
   if not 'Current: Manual' in out:
     raise RuntimeError('Camera needs to be set in "Manual" mode')
-  log('Camera in manual mode')
+  logger.info('Camera in manual mode')
     
   # capture full-resolution RAW files
   run(gphoto2Executable + " --set-config /main/imgsettings/imageformat=20")
@@ -115,7 +121,7 @@ while nbShots < shootInfo.nbShots:
     takeShot()
     nbShots += 1
   else :
-    print "Waiting for the sun to come out"
+    logger.info('Waiting for the sun to come out')
   
   if nbShots < shootInfo.nbShots:
     # wait only if we still need to shoot
@@ -126,10 +132,10 @@ while nbShots < shootInfo.nbShots:
       # wait only if the delay is larger than the time it took to take the shot (gphoto2 can be quite slow)
       waitTime = shootInfo.delay - tDelay
     
-      print 'Waiting ' + str(waitTime.seconds) + 's...'
+      logger.info('Waiting ' + str(waitTime.seconds) + 's...')
       time.sleep(waitTime.seconds)
       
-print 'All done!'
+logger.info('All done!')
     
   # compute the desired time
   #print datetime.utcnow(), 'waiting ...'
