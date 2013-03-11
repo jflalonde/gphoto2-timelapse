@@ -189,12 +189,22 @@ def delete_picture(from_folder = None) :
   
   return ret
 
-def reset_settings() :
-  log('reseting settings')
-  run(gphoto2Executable + " --set-config /main/capturesettings/flashmode=1")
-  run(gphoto2Executable + " --set-config /main/capturesettings/focusmode=0")
+def initialize() :
+  log('Initializing settings')
+  #run(gphoto2Executable + " --set-config /main/capturesettings/flashmode=1")
+  #run(gphoto2Executable + " --set-config /main/capturesettings/focusmode=0")
+  
+  # set picture mode to "faithful" (not sure if this affects RAW files...)
+  # this appears to be "not configurable". So we should check whether this is true and throw an error if not.
+  # run(gphoto2Executable + " --set-config /main/capturesettings/picturemode=5")
+  
+  # we should also check whether we are in 'M' mode (we should find the string 'Current: Manual' in there)
+  # run(gphoto2Executable + " --get-config /main/capturesettings/autoexposuremode")
+  
+  # capture full-resolution RAW files
+  run(gphoto2Executable + " --set-config /main/imgsettings/imageformat=20")
 
-reset_settings()
+initialize()
 
 nbShots = 0
 # loop until we have the required number of shots
