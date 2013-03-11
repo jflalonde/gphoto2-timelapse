@@ -78,7 +78,7 @@ class Shoot(object):
           call = call + "--set-config " + config.name + "=" + config.value + " "
             
       # capture the image
-      call = call + "--capture-image-and-download --force-overwrite "
+      call = call + "--capture-image-and-download "
       
     # set the filename
     filename = os.path.join(self.folder, self.getFilename())
