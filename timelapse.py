@@ -213,25 +213,30 @@ def reset_settings() :
 
 reset_settings()
 
-while True :
-  t = datetime.utcnow()
+nbShots = 0
+# loop until we have the required number of shots
+while nbShots < shootInfo.nbShots:
+  tInit = datetime.utcnow()
   
   # only take pictures when it is light out
-  if (not shootInfo.ignoreSun) and sun.is_light(t):
+  if shootInfo.ignoreSun or sun.is_light(tInit):
     # reset_camera()
-    take_picture()
+    takeShot()
+    nbShots += 1
   else :
     print "Waiting for the sun to come out"
-      
-  # remove the picture from camera memory since there isn't much there
-  # doing this even if we're waiting for the sun, hoping that it will keep
-  # the camera awake
-  # reset_camera()
-  delete_picture()
+    
+  tCur = datetime.utcnow()
   
-  # wait for 1 minute
-  # we can't just do sleep(5 * 60) because taking the picture takes time
-  print datetime.utcnow(), 'waiting ...'
-  while datetime.utcnow() < t + shootInfo.delay :
-    time.sleep(1)
+  tDelay = tCur - tInit
+  if tDelay < shootInfo.delay:
+    waitTime = shootInfo.delay - tDelay
+    
+    print 'Waiting ' + str(waitTime.seconds) + 's...'
+    time.sleep(waitTime.seconds)
+    
+  # compute the desired time
+  #print datetime.utcnow(), 'waiting ...'
+  #while datetime.utcnow() < t + shootInfo.delay :
+  #  time.sleep(1)
 
