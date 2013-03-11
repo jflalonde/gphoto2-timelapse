@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 NOTE: many settings in here are specific to the NIKON3000 and will need to be 
 tweaked for other cameras
