@@ -38,7 +38,7 @@ class Shoot(object):
     
     nbShotsAttributeNode = xmlElement.getAttributeNode('nbShots') 
     if nbShotsAttributeNode != None:
-      self.nbShots = nbShotsAttributeNode.value
+      self.nbShots = float(nbShotsAttributeNode.value)
       
     delayAttributeNode = xmlElement.getAttributeNode('delay')
     if delayAttributeNode != None:
@@ -51,9 +51,9 @@ class Shoot(object):
     # read all the exposures
     exposureNodes = xmlElement.getElementsByTagName('exposure')
     for node in exposureNodes:
-      exposure = Exposure();
-      exposure.fromXMLElement(node);
-      self.exposures.append(exposure);
+      exp = Exposure(config=[])
+      exp.fromXMLElement(node)
+      self.exposures.append(exp)
       
   def fromXMLFile(self, xmlFilename):
     """ Loads shoot information from an XML file """
@@ -105,8 +105,8 @@ class Exposure(object):
 class Configuration(object):
   """ Stores configuration information (name and value) """
   
-  def __init(self, name = '', value = ''):
-    
+  def __init(self, name = None, value = None):
+    """ Constructor """ 
     # configuration name (must be compatible with gphoto2 --list-config), but we're not going to check this.
     self.name = name;
     
@@ -115,6 +115,7 @@ class Configuration(object):
     
     
   def fromXMLElement(self, xmlElement):
+    """ Create a Configuration object from an XML element"""
     nameAttributeNode = xmlElement.getAttributeNode('name')
     valueAttributeNode = xmlElement.getAttributeNode('value')
     
@@ -124,6 +125,7 @@ class Configuration(object):
                            '), but no accompanying value.')
       
       self.name = nameAttributeNode.value
+      self.value = valueAttributeNode.value
   
       
     
