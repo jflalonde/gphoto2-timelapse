@@ -218,15 +218,20 @@ while nbShots < shootInfo.nbShots:
     nbShots += 1
   else :
     print "Waiting for the sun to come out"
-    
-  tCur = datetime.utcnow()
   
-  tDelay = tCur - tInit
-  if tDelay < shootInfo.delay:
-    waitTime = shootInfo.delay - tDelay
+  if nbShots < shootInfo.nbShots:
+    # wait only if we still need to shoot
+    tCur = datetime.utcnow()
+  
+    tDelay = tCur - tInit
+    if tDelay < shootInfo.delay:
+      # wait only if the delay is larger than the time it took to take the shot (gphoto2 can be quite slow)
+      waitTime = shootInfo.delay - tDelay
     
-    print 'Waiting ' + str(waitTime.seconds) + 's...'
-    time.sleep(waitTime.seconds)
+      print 'Waiting ' + str(waitTime.seconds) + 's...'
+      time.sleep(waitTime.seconds)
+      
+print 'All done!'
     
   # compute the desired time
   #print datetime.utcnow(), 'waiting ...'
