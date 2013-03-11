@@ -1,0 +1,11 @@
+<shoot folder="~" nbShots="1" delay="1" ignoreSun="true">
+  <!-- Those config settings below are camera-specific. --> 
+  <exposure>
+    <config name="/main/capturesettings/aperture" value="8" />
+    <config name="/main/capturesettings/shutterspeed" value="45" /> <!-- 1/1000 -->
+  </exposure>
+  <exposure>
+    <config name="/main/capturesettings/aperture" value="10" />
+    <config name="/main/capturesettings/shutterspeed" value="42" /> <!-- 1/500 --> 
+  </exposure>
+</shoot>
