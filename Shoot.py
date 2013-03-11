@@ -65,7 +65,24 @@ class Shoot(object):
     
     self.fromXMLElement(shootElements[0])
     xmlDocument.unlink()
+  
+  def toGphoto2Call(self, gphoto2Executable):
+    """ Generates a gphoto2 call for the current shoot """
+    call = gphoto2Executable + " "
+    
+    for exposure in self.exposures:
+      # set the configuration(s)
+      for config in exposure.config:
+        if config.name != None:
+          call = call + "--set-config " + config.name + "=" + config.value + " "
+            
+      # capture the image
+      call = call + "--capture-image-and-download "
       
+      # set the filename
+      call = call + "--filename " + "yo" + " "
+      
+    return call
     
 class Exposure(object):
   """ Stores information for a particular exposure (a list of configurations) """
