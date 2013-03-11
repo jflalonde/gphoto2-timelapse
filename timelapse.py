@@ -107,6 +107,11 @@ def initialize() :
     
   # capture full-resolution RAW files
   run(gphoto2Executable + " --set-config /main/imgsettings/imageformat=20")
+  
+  # set ISO
+  run(gphoto2Executable + " --set-config /main/imgsettings/iso=100")
+  
+  # TODO: set white balance
 
 initialize()
 
