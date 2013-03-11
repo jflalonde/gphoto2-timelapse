@@ -165,29 +165,12 @@ def list_files() :
   
   return files
 
-workaround = True
-def take_picture(filename = None) :
-  if not filename :
-    filename = prefix + '_' + datetime.utcnow().strftime("%Y%m%d-%H%M%S.jpg")
-  
+def takeShot(filename = None) :
   log('taking picture')
-  if workaround :
-    # this works around --capture-image-and-download not working
-    # get rid of any existing files on the card
-    for folder, _ in list_files() :
-      delete_picture(from_folder = folder)
-    
-    # take the picture
-    run(gphoto2Executable + " --capture-image")
-    
-    # copy the picture from the camera to local disk
-    run(gphoto2Executable + " --get-file=1 --filename=%s/%s" % (shootInfo.folder, filename))
-    
-    ## delete file off of camera
-    #delete_picture()
-  else :
-    return run(gphoto2Executable + " --capture-image-and-download --filename %s/%s" % (shootInfo.folder, filename))
-
+  call = shootInfo.toGphoto2Call(gphoto2Executable)
+  
+  run(call)
+  
 def delete_picture(from_folder = None) :
   log('deleting picture')
   

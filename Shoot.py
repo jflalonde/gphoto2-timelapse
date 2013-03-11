@@ -5,7 +5,7 @@ Created on Mar 8, 2013
 '''
 
 import xml.dom.minidom
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 class Shoot(object):
   """ Stores information relative to a shoot. See the file config-example.txt for valid XML files. """
@@ -77,12 +77,18 @@ class Shoot(object):
           call = call + "--set-config " + config.name + "=" + config.value + " "
             
       # capture the image
-      call = call + "--capture-image-and-download "
+      call = call + "--capture-image-and-download --force-overwrite "
       
-      # set the filename
-      call = call + "--filename " + "yo" + " "
+    # set the filename
+    filename = self.getFilename()
+    call = call + "--filename " + filename + "_%03n.cr2"
       
     return call
+  
+  def getFilename(self):
+    """ Generates a unique filename (based on current time) """
+    filename = datetime.now().strftime("%Y%m%d-%H%M%S")
+    return filename
     
 class Exposure(object):
   """ Stores information for a particular exposure (a list of configurations) """
