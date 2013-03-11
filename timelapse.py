@@ -25,13 +25,13 @@ DEBUG = False
 gphoto2Executable = '/usr/local/bin/gphoto2'
 
 # setup logger
-logger = logging.getLogger('DownloadImagesThreads')
+logger = logging.getLogger('TimelapseLogger')
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     
 # setup console handler
 ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
+ch.setLevel(logging.INFO)
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
@@ -72,7 +72,7 @@ def run(cmd) :
       
     if ret == 1:
       if 'No camera found' in stderr:
-        raise RuntimeError('Error talking to the camera: %s', stderr)
+        raise RuntimeError('Error talking to the camera: ' + stderr)
       
     return stdout
   
