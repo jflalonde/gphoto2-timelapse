@@ -27,12 +27,12 @@ gphoto2Executable = '/usr/local/bin/gphoto2'
 
 # setup logger
 logger = logging.getLogger('TimelapseLogger')
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     
 # setup console handler
 ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
+ch.setLevel(logging.DEBUG)
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
