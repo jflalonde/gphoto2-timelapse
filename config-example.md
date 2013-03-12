@@ -1,58 +1,82 @@
-We use XML files to specify what kind of shoot to be taken. 
+Example configurations
+======================
+
+We can obtain different behaviors simply by changing the input XML configuration files.
+
+Single photo
+------------
 
 The simplest kind of shoot is to take a single exposure with the current settings. 
-This is achieved with the following XML configuration file, which takes a single shot and stores it in /home/me.
+This is achieved with the following XML configuration file, which takes a single shot and stores it in `/home/me`.
 
-<?xml version="1.0" encoding="UTF-8"?>
-<shoot nbShots="1" folder="/home/me">
-  <exposure/>
-</shoot>
+    <shoot nbShots="1" folder="/home/me">
+      <exposure/>
+    </shoot>
 
 
-By setting 'nbShots' to Inf and delay to a value (in minutes), we effectively implement a continuous time-lapse
+Continuous time-lapse
+---------------------
+
+By setting `nbShots` to `Inf` and delay to a value (in minutes), we effectively implement a continuous time-lapse
 capture setup.
 
-<?xml version="1.0" encoding="UTF-8"?>
-<shoot folder="/home/me" nbShots="Inf" delay="1">
-  <exposure/>
-</shoot>
+    <shoot folder="/home/me" nbShots="Inf" delay="1">
+      <exposure/>
+    </shoot>
+
+Continous day-time time-lapse
+-----------------------------
+
+We can also tell our script to stop capturing photos if the sun is down by setting the `ignoreSun` flag to `false`
+(defaults to `true`):
+
+    <shoot folder="/home/me" nbShots="Inf" delay="1" ignoreSun="false">
+      <exposure/>
+    </shoot>
 
 
-We can also tell our script to stop capturing photos if the sun is down by setting the 'ignoreSun' flag to false
-(defaults to true):
+Configuration
+-------------
 
-<?xml version="1.0" encoding="UTF-8"?>
-<shoot folder="/home/me" nbShots="Inf" delay="1" ignoreSun="false">
-  <exposure/>
-</shoot>
-
-
-We can specify (one or many) configuration settings to be used for the photo by adding a list of <config> tags
-to the photo. Each config tag's name and value correspond to the --set-config name/value in gphoto2. 
+We can specify (one or many) configuration settings to be used for the photo by adding a list of `config` tags
+to the photo. Each config tag's name and value correspond to the `--set-config` name/value in `gphoto2`. 
 For example, here we set the aperture to f/8 and the shutter speed to 1/1000:
 
-<?xml version="1.0" encoding="UTF-8"?>
-<shoot folder="/home/me" nbShots="Inf" delay="1" ignoreSun="false">
-  <exposure>
-    <config name="/main/capturesettings/aperture" value="8" />
-    <config name="/main/capturesettings/shutterspeed" value="1000" />
-  </exposure>
-</shoot>
+    <shoot folder="/home/me" nbShots="Inf" delay="1" ignoreSun="false">
+      <exposure>
+        <config name="/main/capturesettings/aperture" value="8" />
+        <config name="/main/capturesettings/shutterspeed" value="1/1000" />
+      </exposure>
+    </shoot>
+    
+Initialization
+--------------
+
+We can tell our script to launch a series of configuration commands once, at initialization. This can be used, 
+for example, to tell our camera that we want to shoot in RAW:
+
+    <shoot folder="/home/me" nbShots="Inf" delay="1" ignoreSun="false">
+      <init>
+         <config name="/main/imgsettings/imageformat" value="20" /> <!-- Capture RAW files -->
+      </init>
+    </shoot>
 
 
-Finally, we can ask our script to take multiple exposures (with possibly different configurations) at each 
+Multiple exposures 
+------------------
+
+We can ask our script to take multiple exposures (with possibly different configurations) at each 
 time instant in our time-lapse capture.
 
-<?xml version="1.0" encoding="UTF-8"?>
-<shoot folder="/home/me" nbShots="Inf" delay="1" ignoreSun="false">
-  <exposure>
-    <config name="/main/capturesettings/aperture" value="8" />
-    <config name="/main/capturesettings/shutterspeed" value="1000" />
-  </exposure>
-  <exposure>
-    <config name="/main/capturesettings/aperture" value="10" />
-    <config name="/main/capturesettings/shutterspeed" value="500" />
-  </exposure>
-</shoot>
+    <shoot folder="/home/me" nbShots="Inf" delay="1" ignoreSun="false">
+      <exposure>
+        <config name="/main/capturesettings/aperture" value="8" />
+        <config name="/main/capturesettings/shutterspeed" value="1/1000" />
+      </exposure>
+      <exposure>
+        <config name="/main/capturesettings/aperture" value="10" />
+        <config name="/main/capturesettings/shutterspeed" value="1/500" />
+      </exposure>
+    </shoot>
 
 
