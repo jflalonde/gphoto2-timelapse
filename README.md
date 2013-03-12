@@ -5,6 +5,13 @@ Description
 connected via USB (http://gphoto.org/proj/libgphoto2/support.php), and the gphoto2 unix tool 
 (http://www.gphoto.org/).
 
+Supports:
+- single photo
+- continuous time-lapse
+- continous day-time time-lapse
+- multiple exposures
+- automatic configuration from XML file.
+
 Installation
 ============
 
@@ -24,7 +31,8 @@ you can use the python scripts to start taking images:
 
     python timelapse.py test.xml
     
-See the file `config-example.md` for additional documentation on the XML configuration file. Editing this file 
+See [config-example.md](https://github.com/jflalonde/gphoto2-timelapse/blob/master/config-example.md) 
+for additional documentation on the XML configuration file. Editing this file 
 will allow you to easily change the behavior of the time-lapse sequence you're capturing. 
 
 Credits
