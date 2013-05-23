@@ -22,6 +22,11 @@ You can use the install scripts - gphoto2-install / install
 It's a great idea to install `gphoto2` from source as the pre-built libraries are generally old. 
 The `gphoto2-install` script does just this.
 
+Dependencies 
+------------
+
+You will need the `ephem` python toolbox, available from: http://rhodesmill.org/pyephem/.
+
 Use
 ===
 
