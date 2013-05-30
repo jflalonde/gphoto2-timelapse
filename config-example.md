@@ -12,7 +12,17 @@ This is achieved with the following XML configuration file, which takes a single
     <shoot nbShots="1" folder="/home/me">
       <exposure/>
     </shoot>
+    
+Saving images
+-------------
 
+We can tell the script to keep the images on the camera, or to download them each time one is captured.
+If `downloadImages` is set to `true` (the default), images are downloaded at capture time. Otherwise, 
+images are left on the camera. 
+
+    <shoot downloadImages="true">
+      <exposure/>
+    </shoot>
 
 Continuous time-lapse
 ---------------------
