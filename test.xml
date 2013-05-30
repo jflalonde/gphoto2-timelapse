@@ -1,4 +1,4 @@
-<shoot folder="~" nbShots="1" delay="1" ignoreSun="true">
+<shoot folder="~" nbShots="1" delay="1" ignoreSun="true" downloadImages="true">
   <!-- List of configuration settings to be applied once, at the very beginning of the shoot -->
   <init>
     <config name="/main/imgsettings/iso" value="100" /> <!-- Set ISO -->

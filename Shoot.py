@@ -12,7 +12,7 @@ class Shoot(object):
   """ Stores information relative to a shoot. See the file config-example.txt for valid XML files. """
 
   def __init__(self, folder = '.', nbShots = float('inf'), delay = 1, 
-               ignoreSun = True, exposures = [], initConfig = []):
+               ignoreSun = True, exposures = [], initConfig = [], downloadImages = True):
     """ Constructor """
     
     # shoot properties
@@ -33,6 +33,9 @@ class Shoot(object):
     # list of initialization configuration
     self.initConfig = initConfig
     
+    # whether or not to download images
+    self.downloadImages = downloadImages
+    
   def fromXMLElement(self, xmlElement):
     # read attributes from the note (if available)
     
@@ -51,6 +54,10 @@ class Shoot(object):
     ignoreSunAttributeNode = xmlElement.getAttributeNode('ignoreSun')
     if ignoreSunAttributeNode != None:
       self.ignoreSun = bool(ignoreSunAttributeNode.value)
+      
+    downloadImagesAttributeNode = xmlElement.getAttributeNode('downloadImages')
+    if downloadImagesAttributeNode != None:
+      self.downloadImages = bool(downloadImagesAttributeNode.value)
       
     # read all the exposures
     exposureNodes = xmlElement.getElementsByTagName('exposure')
@@ -93,7 +100,10 @@ class Shoot(object):
           call = call + "--set-config " + config.name + "=" + config.value + " "
             
       # capture the image
-      call = call + "--capture-image-and-download "
+      if self.downloadImages:
+        call = call + "--capture-image-and-download "
+      else:
+        call = call = "--capture-image"
       
     # set the filename
     filename = os.path.join(self.folder, self.getFilename())
