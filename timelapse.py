@@ -15,6 +15,7 @@ from datetime import datetime
 import time
 import subprocess
 import sys
+import os
 from Shoot import Shoot
 
 import logging
@@ -97,11 +98,16 @@ def reset():
 def initialize() :
   logger.info('Initializing settings')
   
-  # First, in Mac OSX, disable the PTPCamera process
-  run("killall PTPCamera")
-  
-  # If we're on the Pi, disable another process
-  run("killall gvfsd-gphoto2")
+  if shootInfo.onPi:
+    # If we're on the Pi, disable the gphoto2 daemon process
+    run("killall gvfsd-gphoto2")
+    
+    # Also, reset the usb to make sure everything works
+    reset()
+    
+  else:
+    # In Mac OSX, disable the PTPCamera process
+    run("killall PTPCamera")
   
   # make sure picture mode is set to "faithful" (not sure if this affects RAW files...)
   # In our case, this should be equal to 5
