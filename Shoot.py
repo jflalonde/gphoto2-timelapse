@@ -110,13 +110,14 @@ class Shoot(object):
       # capture the image
       if self.downloadImages:
         call = call + "--capture-image-and-download "
+        
+        # set the filename
+        filename = os.path.join(self.folder, self.getFilename())
+        call = call + "--filename " + filename + "_%03n.cr2"
+
       else:
         call = call = "--capture-image"
-      
-    # set the filename
-    filename = os.path.join(self.folder, self.getFilename())
-    call = call + "--filename " + filename + "_%03n.cr2"
-      
+            
     return call
   
   def toGphotoInitCall(self, gphoto2Executable):
