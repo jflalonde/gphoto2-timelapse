@@ -87,6 +87,13 @@ def takeShot(filename = None) :
   
   logger.info('Image(s) saved to %s', shootInfo.folder)
   
+def reset():
+  ret = os.popen('lsusb').read()
+  for line in ret.split('\n') :
+    if 'Canon' not in line : continue
+
+    os.system("./usbreset /dev/bus/usb/%s/%s" % (line[4:7], line[15:18]))
+  
 def initialize() :
   logger.info('Initializing settings')
   
