@@ -86,7 +86,8 @@ def takeShot(filename = None) :
   
   run(call)
   
-  logger.info('Image(s) saved to %s', shootInfo.folder)
+  if shootInfo.downloadImages:
+    logger.info('Image(s) saved to %s', shootInfo.folder)
   
 def reset():
   ret = os.popen('lsusb').read()

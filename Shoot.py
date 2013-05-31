@@ -116,7 +116,7 @@ class Shoot(object):
         call = call + "--filename " + filename + "_%03n.cr2 "
 
       else:
-        call = call = "--capture-image "
+        call = call + "--capture-image "
             
     return call
   
