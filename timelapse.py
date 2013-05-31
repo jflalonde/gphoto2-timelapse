@@ -28,7 +28,7 @@ gphoto2Executable = '/usr/bin/gphoto2'
 
 # setup logger
 logger = logging.getLogger('TimelapseLogger')
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     
 # setup console handler
@@ -56,7 +56,7 @@ logger.info('Taking a total of %d shots, and waiting %s minutes between each sho
 logger.info('Each shot will have %d exposure(s)', len(shootInfo.exposures))
 
 def run(cmd) :
-  # reset_camera()
+  reset()
   
   # try running the command once and if it fails, reset_camera
   # and then try once more
@@ -87,6 +87,7 @@ def takeShot(filename = None) :
   run(call)
   
   if shootInfo.downloadImages:
+    # TODO: check if images were correctly saved to disk! Crap out if not since this indicates an error...
     logger.info('Image(s) saved to %s', shootInfo.folder)
   
 def reset():
@@ -95,7 +96,8 @@ def reset():
     if 'Canon' not in line : continue
 
     os.system("./usbreset /dev/bus/usb/%s/%s" % (line[4:7], line[15:18]))
-  
+    logger.debug("Resetting the USB port")
+
 def initialize() :
   logger.info('Initializing settings')
   
