@@ -57,15 +57,15 @@ class Shoot(object):
       
     ignoreSunAttributeNode = xmlElement.getAttributeNode('ignoreSun')
     if ignoreSunAttributeNode != None:
-      self.ignoreSun = bool(ignoreSunAttributeNode.value)
+      self.ignoreSun = bool(int(ignoreSunAttributeNode.value))
       
     downloadImagesAttributeNode = xmlElement.getAttributeNode('downloadImages')
     if downloadImagesAttributeNode != None:
-      self.downloadImages = bool(downloadImagesAttributeNode.value)
+      self.downloadImages = bool(int(downloadImagesAttributeNode.value))
       
     onPiAttributeNode = xmlElement.getAttributeNode('onPi')
     if onPiAttributeNode != None:
-      self.onPi = bool(onPiAttributeNode.value)
+      self.onPi = bool(int(onPiAttributeNode.value))
     
     # read all the exposures
     exposureNodes = xmlElement.getElementsByTagName('exposure')
