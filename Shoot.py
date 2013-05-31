@@ -113,10 +113,10 @@ class Shoot(object):
         
         # set the filename
         filename = os.path.join(self.folder, self.getFilename())
-        call = call + "--filename " + filename + "_%03n.cr2"
+        call = call + "--filename " + filename + "_%03n.cr2 "
 
       else:
-        call = call = "--capture-image"
+        call = call = "--capture-image "
             
     return call
   
