@@ -158,8 +158,3 @@ while nbShots < shootInfo.nbShots:
       
 logger.info('All done!')
     
-  # compute the desired time
-  #print datetime.utcnow(), 'waiting ...'
-  #while datetime.utcnow() < t + shootInfo.delay :
-  #  time.sleep(1)
-
