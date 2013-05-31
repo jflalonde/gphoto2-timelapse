@@ -93,12 +93,16 @@ def initialize() :
   # First, in Mac OSX, disable the PTPCamera process
   run("killall PTPCamera")
   
+  # If we're on the Pi, disable another process
+  run("killall gvfsd-gphoto2")
+  
   # make sure picture mode is set to "faithful" (not sure if this affects RAW files...)
   # In our case, this should be equal to 5
-  out = run(gphoto2Executable + " --get-config /main/capturesettings/picturestyle")
-  if not 'Current: Faithful' in out:
-    raise RuntimeError('Camera needs to be set in the "Faithful" picture style')
-  logger.info('Camera in the faithful picture style')
+  # TODO: add these checks to the configuration files
+  #out = run(gphoto2Executable + " --get-config /main/capturesettings/picturestyle")
+  #if not 'Current: Faithful' in out:
+  #  raise RuntimeError('Camera needs to be set in the "Faithful" picture style')
+  #logger.info('Camera in the faithful picture style')
   
   # we should also check whether we are in 'M' mode 
   out = run(gphoto2Executable + " --get-config /main/capturesettings/autoexposuremode")
