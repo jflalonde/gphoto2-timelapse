@@ -24,7 +24,7 @@ import sun
 DEBUG = False
 
 # specify the path to the gphoto2 executable
-gphoto2Executable = '/usr/local/bin/gphoto2'
+gphoto2Executable = '/usr/bin/gphoto2'
 
 # setup logger
 logger = logging.getLogger('TimelapseLogger')
