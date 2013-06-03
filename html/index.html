@@ -1,33 +1,52 @@
-<!DOCTYPE html>
+<html>
 <head>
 <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-<title>Python-jQuery Example</title>
+<title>Camera Control</title>
 <script src="http://code.jquery.com/jquery-1.5.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
 <center>
 <h2>Camera Control</h2>
-<form id="search_box"><input id="search_text" type="text"/></form>
+<form id="search_box">
+<button type="button" id="controlButton">Fend le cul</button>
+</form>
+
+<div id="success">Success!</div>
+<div id="failure">Failure!</div>
+
 <br/>
-<div id="jQuery_send"></div>
-<div id="python_response"></div>
+<div id="cameraResponse"></div>
 </center>
 </body>
 
 <script>
-  $('#search_box').submit(function() {
-  $('#jQuery_send').text("jQuery sent: " + $('#search_text').val() );
-  $('#python_response').text("Waiting for python...");
+  $('#controlButton').text("Shoot!");
+  $('#controlButton').show();
+
+  $('#success').hide();
+  $('#failure').hide();
+
+  $('#controlButton').click(function() {
+  $('#cameraResponse').html("Waiting for camera...");
+  $('#controlButton').hide();
+  $('#success').hide();
+  $('#failure').hide();
 
   $.ajax(
   {
     type: "POST",
     url: "../cgi-bin/test.py",
-    data: "stuff_for_python=" + $('#search_text').val(),
     success: function(response)
     {
-      $('#python_response').text("Python returned: " + response);
+      if (response.indexOf("successful") != -1) {
+         $('#success').show();
+      } else {
+         $('#failure').show();
+      }
+      $('#cameraResponse').html(response.replace(/(\r\n|\n|\r)/gm, "<br/>"));
+      $('#controlButton').show();
     }
   });
   

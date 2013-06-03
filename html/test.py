@@ -10,8 +10,8 @@ import subprocess
 cgitb.enable()  # for troubleshooting
 
 #the cgi library gets vars from html
-form = cgi.FieldStorage()
-jquery_input = form.getvalue("stuff_for_python", "nothing sent")
+#form = cgi.FieldStorage()
+#jquery_input = form.getvalue("stuff_for_python", "nothing sent")
 
 cmd = "/home/pi/code/gphoto2-timelapse/timelapse.py /home/pi/code/gphoto2-timelapse/test.xml"
 
@@ -30,8 +30,8 @@ print "Content-type: text/html"
 print
 
 if ret == 0:
-    print "Shoot successful!: " + stderr
+    print "Shoot successful! \n" + stderr
 
 else:
-    print "Shoot failed!"
+    print "Shoot failed! \n" + stderr
 
