@@ -26,6 +26,9 @@ DEBUG = False
 # specify the path to the gphoto2 executable
 gphoto2Executable = '/usr/bin/gphoto2'
 
+# specify the (full) path to the 'usbreset' executable
+usbresetExecutable = '/home/pi/code/gphoto2-timelapse/usbreset'
+
 # setup logger
 logger = logging.getLogger('TimelapseLogger')
 logger.setLevel(logging.DEBUG)
@@ -95,8 +98,9 @@ def reset():
   for line in ret.split('\n') :
     if 'Canon' not in line : continue
 
-    os.system("./usbreset /dev/bus/usb/%s/%s" % (line[4:7], line[15:18]))
-    logger.debug("Resetting the USB port")
+    usbresetCmd = "%s /dev/bus/usb/%s/%s" % (usbresetExecutable, line[4:7], line[15:18])
+    os.system(usbresetCmd)
+    logger.debug("Resetting the USB port: %s", usbresetCmd)
 
 def initialize() :
   logger.info('Initializing settings')
