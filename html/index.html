@@ -7,7 +7,7 @@
 
 <body>
 <center>
-<h2>Python-jQuery Example</h2>
+<h2>Camera Control</h2>
 <form id="search_box"><input id="search_text" type="text"/></form>
 <br/>
 <div id="jQuery_send"></div>
@@ -16,21 +16,24 @@
 </body>
 
 <script>
-$('#search_box').submit(function() {
-$('#jQuery_send').text("jQuery sent: " + $('#search_text').val() );
-$('#python_response').text("Waiting for python...");
+  $('#search_box').submit(function() {
+  $('#jQuery_send').text("jQuery sent: " + $('#search_text').val() );
+  $('#python_response').text("Waiting for python...");
 
-$.ajax(
-{
-type: "POST",
-url: "../cgi-bin/test.py",
-data: "stuff_for_python=" + $('#search_text').val(),
-success: function(response)
-{
-        $('#python_response').text("Python returned: " + response);
-}
+  $.ajax(
+  {
+    type: "POST",
+    url: "../cgi-bin/test.py",
+    data: "stuff_for_python=" + $('#search_text').val(),
+    success: function(response)
+    {
+      $('#python_response').text("Python returned: " + response);
+    }
+  });
+  
+  return false;
 });
-return false;
-});
+
 </script>
+
 </html>
