@@ -30,16 +30,9 @@ gphoto2Executable = '/usr/bin/gphoto2'
 usbresetExecutable = '/home/pi/code/gphoto2-timelapse/usbreset'
 
 # setup logger
-logger = logging.getLogger('TimelapseLogger')
-logger.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', 
+                    level=logging.INFO)
     
-# setup console handler
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-ch.setFormatter(formatter)
-logger.addHandler(ch)
-
 def usage():
   """ Prints usage information """
   print 'Usage: timelapse.py config.xml'
@@ -54,16 +47,16 @@ shootInfo = Shoot()
 shootInfo.fromXMLFile(sys.argv[1])
 
 # Display high-level information
-logger.info('Taking a total of %d shots, and waiting %s minutes between each shot', 
+logging.info('Taking a total of %d shots, and waiting %s minutes between each shot', 
             shootInfo.nbShots, str(shootInfo.delay))
-logger.info('Each shot will have %d exposure(s)', len(shootInfo.exposures))
+logging.info('Each shot will have %d exposure(s)', len(shootInfo.exposures))
 
 def run(cmd) :
   reset()
   
   # try running the command once and if it fails, reset_camera
   # and then try once more
-  logger.debug("running %s" % cmd)
+  logging.debug("running %s" % cmd)
     
   if not DEBUG: 
     p = subprocess.Popen(cmd, shell=True,
@@ -84,14 +77,14 @@ def run(cmd) :
   return ''
 
 def takeShot(filename = None) :
-  logger.info('Taking %d exposure(s)', len(shootInfo.exposures))
+  logging.info('Taking %d exposure(s)', len(shootInfo.exposures))
   call = shootInfo.toGphotoCaptureCall(gphoto2Executable)
   
   run(call)
   
   if shootInfo.downloadImages:
     # TODO: check if images were correctly saved to disk! Crap out if not since this indicates an error...
-    logger.info('Image(s) saved to %s', shootInfo.folder)
+    logging.info('Image(s) saved to %s', shootInfo.folder)
   
 def reset():
   ret = os.popen('lsusb').read()
@@ -100,15 +93,16 @@ def reset():
 
     usbresetCmd = "%s /dev/bus/usb/%s/%s" % (usbresetExecutable, line[4:7], line[15:18])
     os.system(usbresetCmd)
-    logger.debug("Resetting the USB port: %s", usbresetCmd)
+    logging.debug("Resetting the USB port: %s", usbresetCmd)
 
 def initialize() :
-  logger.info('Initializing settings')
+  logging.info('Initializing settings')
   
   if shootInfo.onPi:
     # If we're on the Pi, disable the gphoto2 daemon process
     run("killall gvfsd-gphoto2")
-    
+    run("killall gvfs-gphoto2-volume-monitor")
+
     # Also, reset the usb to make sure everything works
     reset()
     
@@ -122,13 +116,13 @@ def initialize() :
   #out = run(gphoto2Executable + " --get-config /main/capturesettings/picturestyle")
   #if not 'Current: Faithful' in out:
   #  raise RuntimeError('Camera needs to be set in the "Faithful" picture style')
-  #logger.info('Camera in the faithful picture style')
+  #logging.info('Camera in the faithful picture style')
   
   # we should also check whether we are in 'M' mode 
   out = run(gphoto2Executable + " --get-config /main/capturesettings/autoexposuremode")
   if not 'Current: Manual' in out:
     raise RuntimeError('Camera needs to be set in "Manual" mode')
-  logger.info('Camera in manual mode')
+  logging.info('Camera in manual mode')
     
   # capture full-resolution RAW files
   call = shootInfo.toGphotoInitCall(gphoto2Executable)
@@ -149,7 +143,7 @@ while nbShots < shootInfo.nbShots:
     takeShot()
     nbShots += 1
   else :
-    logger.info('Waiting for the sun to come out')
+    logging.info('Waiting for the sun to come out')
   
   if nbShots < shootInfo.nbShots:
     # wait only if we still need to shoot
@@ -160,8 +154,8 @@ while nbShots < shootInfo.nbShots:
       # wait only if the delay is larger than the time it took to take the shot (gphoto2 can be quite slow)
       waitTime = shootInfo.delay - tDelay
     
-      logger.info('Waiting ' + str(waitTime.seconds) + 's...')
+      logging.info('Waiting ' + str(waitTime.seconds) + 's...')
       time.sleep(waitTime.seconds)
       
-logger.info('All done!')
+logging.info('All done!')
     
