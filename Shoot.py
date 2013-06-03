@@ -102,9 +102,9 @@ class Shoot(object):
     call = gphoto2Executable + " "
     filenames = list()
     
-    for exposure in self.exposures:
+    for exposureId in range(0, len(self.exposures)):
       # set the configuration(s)
-      for config in exposure.config:
+      for config in self.exposures[exposureId].config:
         if config.name != None:
           call = call + "--set-config " + config.name + "=" + config.value + " "
             
@@ -114,9 +114,12 @@ class Shoot(object):
         
         # set the filename
         filename = os.path.join(self.folder, self.getFilename())
-        filenames.append(filename)
-        call = call + "--filename " + filename + "_%03n.cr2 "
-
+        filename = filename + "_%03n.cr2"
+        call = call + "--filename " + filename
+        
+        # we'll store the _actual_ filename (replacing the %03n by the actual value)
+        filename = filename.replace("%03n", ("%03d" % exposureId))
+        
       else:
         call = call + "--capture-image "
             
