@@ -78,12 +78,18 @@ def run(cmd) :
 
 def takeShot(filename = None) :
   logging.info('Taking %d exposure(s)', len(shootInfo.exposures))
-  call = shootInfo.toGphotoCaptureCall(gphoto2Executable)
+  (call, filenames) = shootInfo.toGphotoCaptureCall(gphoto2Executable)
   
   run(call)
   
   if shootInfo.downloadImages:
-    # TODO: check if images were correctly saved to disk! Crap out if not since this indicates an error...
+    for filename in filenames:
+      # check if images were correctly saved to disk
+      if not os.path.exists(filename):
+        raise RuntimeError('File not successfully saved to disk: %s', filename)
+      else: 
+        logging.debug('File successfully saved to disk: %s', filename)
+      
     logging.info('Image(s) saved to %s', shootInfo.folder)
   
 def reset():
@@ -128,8 +134,6 @@ def initialize() :
   call = shootInfo.toGphotoInitCall(gphoto2Executable)
   run(call)
   
-  # TODO: set white balance
-
 initialize()
 
 nbShots = 0

@@ -100,6 +100,7 @@ class Shoot(object):
   def toGphotoCaptureCall(self, gphoto2Executable):
     """ Generates a gphoto2 call for the current shoot """
     call = gphoto2Executable + " "
+    filenames = list()
     
     for exposure in self.exposures:
       # set the configuration(s)
@@ -113,12 +114,13 @@ class Shoot(object):
         
         # set the filename
         filename = os.path.join(self.folder, self.getFilename())
+        filenames.append(filename)
         call = call + "--filename " + filename + "_%03n.cr2 "
 
       else:
         call = call + "--capture-image "
             
-    return call
+    return (call, filenames)
   
   def toGphotoInitCall(self, gphoto2Executable):
     """ Generates a gphoto2 call to initialize """
