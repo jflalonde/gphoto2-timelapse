@@ -115,7 +115,7 @@ class Shoot(object):
         # set the filename
         filename = os.path.join(self.folder, self.getFilename())
         filename = filename + "_%03n.cr2"
-        call = call + "--filename " + filename
+        call = call + "--filename " + filename + " "
         
         # we'll store the _actual_ filename (replacing the %03n by the actual value)
         filename = filename.replace("%03n", ("%03d" % (exposureId+1)))
