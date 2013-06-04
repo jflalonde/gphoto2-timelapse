@@ -118,8 +118,9 @@ class Shoot(object):
         call = call + "--filename " + filename
         
         # we'll store the _actual_ filename (replacing the %03n by the actual value)
-        filename = filename.replace("%03n", ("%03d" % exposureId))
-        
+        filename = filename.replace("%03n", ("%03d" % (exposureId+1)))
+        filenames.append(filename)
+
       else:
         call = call + "--capture-image "
             
