@@ -1,11 +1,26 @@
 <shoot folder="/home/pi/photos" nbShots="1" delay="1" ignoreSun="1" downloadImages="1" onPi="1">
   <!-- Now the configuration to be set prior to each exposure --> 
   <exposure>
-    <config name="/main/capturesettings/aperture" value="8" />
+    <config name="/main/capturesettings/aperture" value="16" />
+    <config name="/main/capturesettings/shutterspeed" value="1/8000" />
+  </exposure>
+  <exposure>
     <config name="/main/capturesettings/shutterspeed" value="1/1000" />
   </exposure>
   <exposure>
-    <config name="/main/capturesettings/aperture" value="10" />
-    <config name="/main/capturesettings/shutterspeed" value="1/500" /> 
+    <config name="/main/capturesettings/shutterspeed" value="1/1250" />
+  </exposure>
+  <exposure>
+    <config name="/main/capturesettings/aperture" value="4" />
+    <config name="/main/capturesettings/shutterspeed" value="1/250" />
+  </exposure>
+  <exposure>
+    <config name="/main/capturesettings/shutterspeed" value="1/30" />
+  </exposure>
+  <exposure>
+    <config name="/main/capturesettings/shutterspeed" value="1/4" />
+  </exposure>
+  <exposure>
+    <config name="/main/capturesettings/shutterspeed" value="1" />
   </exposure>
 </shoot>
