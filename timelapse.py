@@ -101,6 +101,7 @@ def initialize() :
   
   if shootInfo.onPi:
     # If we're on the Pi, disable the gphoto2 daemon process
+    run("killall gphoto2")
     run("killall gvfsd-gphoto2")
     run("killall gvfs-gphoto2-volume-monitor")
 
