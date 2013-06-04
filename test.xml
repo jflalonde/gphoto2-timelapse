@@ -2,7 +2,7 @@
   <!-- List of configuration settings to be applied once, at the very beginning of the shoot -->
   <init>
     <config name="/main/imgsettings/iso" value="100" /> <!-- Set ISO -->
-    <config name="/main/imgsettings/imageformat" value="20" /> <!-- Capture RAW files -->
+    <config name="/main/imgsettings/imageformat" value="32" /> <!-- Capture RAW files -->
   </init>
   <!-- Now the configuration to be set prior to each exposure --> 
   <exposure>
