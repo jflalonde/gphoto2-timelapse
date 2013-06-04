@@ -1,0 +1,7 @@
+<shoot nbShots="1" onPi="1">
+  <!-- List of configuration settings to be applied once, at the very beginning of the shoot -->
+  <init>
+    <config name="/main/imgsettings/iso" value="100" /> <!-- Set ISO -->
+    <config name="/main/imgsettings/imageformat" value="32" /> <!-- Capture RAW files -->
+  </init>
+</shoot>
