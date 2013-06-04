@@ -22,13 +22,16 @@ xmlFile = ""
 if jquery_input == "init":
     # use the initialization xml file
     xmlFile = xmlInit
+    cmd = "/home/pi/code/gphoto2-timelapse/timelapse.py " + xmlFile
 
-else:
+elif jquery_input == "shoot":
     # use the main xml file
     xmlFile = xmlShoot
+    cmd = "/home/pi/code/gphoto2-timelapse/timelapse.py " + xmlFile
 
+else: # kill
+    cmd = "killall gphoto2"
 
-cmd = "/home/pi/code/gphoto2-timelapse/timelapse.py " + xmlFile
 
 # launch the command
 # TODO: use the timelapse module directly!

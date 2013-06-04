@@ -10,9 +10,10 @@
 <center>
 <h2>Camera Control</h2>
 <form id="search_box">
-<button type="button" id="initButton"></button>
+<button type="button" id="initButton">Initialize</button>
+<button type="button" id="killButton">Die!</button>
 <br/>
-<button type="button" id="controlButton"></button>
+<button type="button" id="controlButton">Shoot!</button>
 </form>
 
 <div id="success">Success!</div>
@@ -24,14 +25,10 @@
 </body>
 
 <script>
-  $('#controlButton').text("Shoot!");
-  $('#controlButton').show();
-
-  $('#initButton').text("Initialize");
-
   $('#success').hide();
   $('#failure').hide();
 
+  /* Callback for shoot button */
   $('#controlButton').click(function() {
   $('#cameraResponse').html("Waiting for camera...");
   $('#controlButton').hide();
@@ -58,6 +55,7 @@
   return false;
   });
 
+  /* Callback for initialization button */
   $('#initButton').click(function() {
   $('#initButton').hide();
   $('#controlButton').hide();
@@ -80,6 +78,24 @@
       } else {
         $('#cameraResponse').html("Initialization failed.");
       } 
+    }
+  });
+
+  return false;
+  });
+
+  /* Callback for die button */
+  $('#killButton').click(function() {
+  $('#killButton').hide();
+  
+  $.ajax(
+  {
+    type: "POST",
+    url: "../cgi-bin/test.py",
+    data: "input=kill",
+    success: function(response)
+    {
+      $('#killButton').show();
     }
   });
 
