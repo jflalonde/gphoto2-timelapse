@@ -10,18 +10,32 @@ import subprocess
 cgitb.enable()  # for troubleshooting
 
 #the cgi library gets vars from html
-#form = cgi.FieldStorage()
-#jquery_input = form.getvalue("stuff_for_python", "nothing sent")
+form = cgi.FieldStorage()
+jquery_input = form.getvalue("input", "")
 
-cmd = "/home/pi/code/gphoto2-timelapse/timelapse.py /home/pi/code/gphoto2-timelapse/test.xml"
+basePath = "/home/pi/code/gphoto2-timelapse"
+xmlInit = os.path.join(basePath, "init.xml")
+xmlShoot = os.path.join(basePath, "shoot.xml")
 
-#ret = subprocess.call(cmd, shell=True)
+xmlFile = ""
 
+if jquery_input == "init":
+    # use the initialization xml file
+    xmlFile = xmlInit
+
+else:
+    # use the main xml file
+    xmlFile = xmlShoot
+
+
+cmd = "/home/pi/code/gphoto2-timelapse/timelapse.py " + xmlFile
+
+# launch the command
+# TODO: use the timelapse module directly!
 p = subprocess.Popen(cmd, shell=True,
                      stdout=subprocess.PIPE,
                      stderr=subprocess.PIPE,
                      )
-
 (stdout, stderr) = p.communicate()
 ret = p.returncode
 

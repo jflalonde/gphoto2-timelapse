@@ -10,7 +10,9 @@
 <center>
 <h2>Camera Control</h2>
 <form id="search_box">
-<button type="button" id="controlButton">Fend le cul</button>
+<button type="button" id="initButton"></button>
+<br/>
+<button type="button" id="controlButton"></button>
 </form>
 
 <div id="success">Success!</div>
@@ -25,6 +27,8 @@
   $('#controlButton').text("Shoot!");
   $('#controlButton').show();
 
+  $('#initButton').text("Initialize");
+
   $('#success').hide();
   $('#failure').hide();
 
@@ -38,9 +42,10 @@
   {
     type: "POST",
     url: "../cgi-bin/test.py",
+    data: "input=shoot",
     success: function(response)
     {
-      if (response.indexOf("successful") != -1) {
+      if (response.indexOf("successful!") != -1) {
          $('#success').show();
       } else {
          $('#failure').show();
@@ -51,7 +56,35 @@
   });
   
   return false;
-});
+  });
+
+  $('#initButton').click(function() {
+  $('#initButton').hide();
+  $('#controlButton').hide();
+
+  $('#success').hide();
+  $('#failure').hide();
+
+  $('#cameraResponse').html("Initializing...");
+
+  $.ajax(
+  {
+    type: "POST",
+    url: "../cgi-bin/test.py",
+    data: "input=init",
+    success: function(response)
+    {
+      if (response.indexOf("successful!") != -1) {
+        $('#cameraResponse').html("Initialization successful.");
+        $('#controlButton').show();
+      } else {
+        $('#cameraResponse').html("Initialization failed.");
+      } 
+    }
+  });
+
+  return false;
+  });
 
 </script>
 
