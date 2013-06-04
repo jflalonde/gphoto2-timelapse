@@ -24,14 +24,14 @@ import sun
 DEBUG = False
 
 # specify the path to the gphoto2 executable
-gphoto2Executable = '/usr/bin/gphoto2'
+gphoto2Executable = 'export LD_LIBRARY_PATH=/usr/local/lib; gphoto2'
 
 # specify the (full) path to the 'usbreset' executable
 usbresetExecutable = '/home/pi/code/gphoto2-timelapse/usbreset'
 
 # setup logger
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', 
-                    level=logging.INFO)
+                    level=logging.DEBUG)
     
 def usage():
   """ Prints usage information """
@@ -52,8 +52,6 @@ logging.info('Taking a total of %d shots, and waiting %s minutes between each sh
 logging.info('Each shot will have %d exposure(s)', len(shootInfo.exposures))
 
 def run(cmd) :
-  reset()
-  
   # try running the command once and if it fails, reset_camera
   # and then try once more
   logging.debug("running %s" % cmd)
@@ -86,20 +84,17 @@ def takeShot(filename = None) :
     for filename in filenames:
       # check if images were correctly saved to disk
       if not os.path.exists(filename):
-        raise RuntimeError('File not successfully saved to disk: %s', filename)
+        raise RuntimeError('File not successfully saved to disk: ' + filename)
       else: 
-        logging.debug('File successfully saved to disk: %s', filename)
+        logging.debug('File successfully saved to disk: ' + filename)
       
     logging.info('Image(s) saved to %s', shootInfo.folder)
   
 def reset():
-  ret = os.popen('lsusb').read()
-  for line in ret.split('\n') :
-    if 'Canon' not in line : continue
+  # use gphoto2's reset command (new with gphoto 2.5)
+  cmd = gphoto2Executable + ' --reset'
+  run(cmd)
 
-    usbresetCmd = "%s /dev/bus/usb/%s/%s" % (usbresetExecutable, line[4:7], line[15:18])
-    os.system(usbresetCmd)
-    logging.debug("Resetting the USB port: %s", usbresetCmd)
 
 def initialize() :
   logging.info('Initializing settings')
