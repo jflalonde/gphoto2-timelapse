@@ -1,4 +1,4 @@
-<shoot folder="/store_00010001/DCIM/100EOS5D" nbShots="1" delay="1" ignoreSun="1" downloadImages="0" onPi="0" camera="Canon EOS 5D Mark III">
+<shoot folder="/store_00010001/DCIM/100EOS5D" nbShots="1" delay="1" ignoreSun="1" downloadImages="0" camera="Canon EOS 5D Mark III">
   <!-- List of configuration settings to be applied once, at the very beginning of the shoot -->
   <init>
     <config name="/main/settings/autopoweroff" value="0" /> <!-- Keep camera on -->
