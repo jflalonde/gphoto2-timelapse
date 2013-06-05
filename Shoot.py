@@ -13,7 +13,7 @@ class Shoot(object):
 
   def __init__(self, folder = '/', filename = '', nbShots = float('inf'), delay = 1, 
                ignoreSun = True, exposures = [], initConfig = [], 
-               downloadImages = True, onPi = False):
+               downloadImages = True, onPi = False, camera = ''):
     """ Constructor """
     
     # shoot properties
@@ -40,6 +40,9 @@ class Shoot(object):
     
     # whether we're on the Raspberry Pi or not
     self.onPi = onPi
+    
+    # camera model
+    self.camera = camera
     
   def fromXMLElement(self, xmlElement):
     # read attributes from the note (if available)
@@ -71,6 +74,10 @@ class Shoot(object):
     onPiAttributeNode = xmlElement.getAttributeNode('onPi')
     if onPiAttributeNode != None:
       self.onPi = bool(int(onPiAttributeNode.value))
+      
+    cameraAttributeNode = xmlElement.getAttributeNode('camera')
+    if cameraAttributeNode != None:
+      self.camera = cameraAttributeNode.value
     
     # read all the exposures
     exposureNodes = xmlElement.getElementsByTagName('exposure')
@@ -105,6 +112,10 @@ class Shoot(object):
   def toGphotoCaptureCall(self, gphoto2Executable):
     """ Generates a gphoto2 call for the current shoot """
     call = gphoto2Executable + " "
+    
+    if self.camera != '':
+      call = call + "--camera=\"" + self.camera + "\" "
+    
     filenames = list()
     
     for exposureId in range(0, len(self.exposures)):
@@ -127,7 +138,7 @@ class Shoot(object):
         filenames.append(filename)
 
       else:
-        call = call + "--folder " + self.folder + " --capture-image "
+        call = call + "--folder=" + self.folder + " --capture-image "
             
     return (call, filenames)
   
@@ -137,6 +148,9 @@ class Shoot(object):
     
     if len(self.initConfig) > 0:
       call = gphoto2Executable + " "
+      
+      if self.camera != '':
+        call = call + "--camera=\"" + self.camera + "\" "
       
       for config in self.initConfig:
         if config.name != None:
