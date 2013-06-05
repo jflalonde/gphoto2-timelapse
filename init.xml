@@ -1,4 +1,4 @@
-<shoot nbShots="1" onPi="1">
+<shoot nbShots="1" onPi="1" camera="Canon EOS 5D Mark III">
   <!-- List of configuration settings to be applied once, at the very beginning of the shoot -->
   <init>
     <config name="/main/settings/autopoweroff" value="0" /> <!-- Keep camera on -->

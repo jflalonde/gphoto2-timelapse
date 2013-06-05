@@ -1,16 +1,19 @@
-<shoot folder="~" nbShots="1" delay="1" ignoreSun="1" downloadImages="0" onPi="0">
+<shoot folder="/store_00010001/DCIM/100EOS5D" nbShots="1" delay="1" ignoreSun="1" downloadImages="0" onPi="0" camera="Canon EOS 5D Mark III">
   <!-- List of configuration settings to be applied once, at the very beginning of the shoot -->
   <init>
+    <config name="/main/settings/autopoweroff" value="0" /> <!-- Keep camera on -->
+    <config name="/main/settings/capturetarget" value="1" /> <!-- Save image on card -->
     <config name="/main/imgsettings/iso" value="100" /> <!-- Set ISO -->
     <config name="/main/imgsettings/imageformat" value="32" /> <!-- Capture RAW files -->
   </init>
   <!-- Now the configuration to be set prior to each exposure --> 
   <exposure>
+    <config name="/main/settings/capturetarget" value="1" /> <!-- Save image on card -->
     <config name="/main/capturesettings/aperture" value="8" />
     <config name="/main/capturesettings/shutterspeed" value="1/1000" />
   </exposure>
-  <exposure>
+<!--  <exposure>
     <config name="/main/capturesettings/aperture" value="10" />
     <config name="/main/capturesettings/shutterspeed" value="1/500" /> 
-  </exposure>
+  </exposure>-->
 </shoot>
