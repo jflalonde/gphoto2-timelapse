@@ -1,6 +1,8 @@
-<shoot folder="/home/pi/photos" nbShots="1" delay="1" ignoreSun="1" downloadImages="1" onPi="1">
+<shoot filename="/home/pi/photos" folder="/store_00010001/DCIM/101EOS5D" nbShots="1" delay="1" ignoreSun="1" downloadImages="0" onPi="1">
   <!-- Now the configuration to be set prior to each exposure --> 
   <exposure>
+    <!-- First exposure needs this, not sure why -->
+    <config name="/main/settings/capturetarget" value="1" /> <!-- Save image on card -->
     <config name="/main/capturesettings/aperture" value="16" />
     <config name="/main/capturesettings/shutterspeed" value="1/8000" />
   </exposure>
