@@ -74,7 +74,23 @@ def run(cmd) :
   
   return ''
 
+def readNumImagesFromCamera() :
+  # not sure what's going on, but it's better to reset more than not enough I guess.
+  reset()
+  
+  cmd = gphoto2Executable + " --folder=" + shootInfo.folder + " --num-files --quiet"
+  numExistingImages = int(run(cmd))
+  
+  logging.debug("Found %d images on the folder %s" % (numExistingImages, shootInfo.folder))
+  
+  return numExistingImages
+
 def takeShot(filename = None) :
+  # if we're not downloading images, first check how many images there are in the destination folder
+  prevExistingImages = 0
+  if not shootInfo.downloadImages:
+    prevExistingImages = readNumImagesFromCamera()
+  
   logging.info('Taking %d exposure(s)', len(shootInfo.exposures))
   (call, filenames) = shootInfo.toGphotoCaptureCall(gphoto2Executable)
   
@@ -87,13 +103,25 @@ def takeShot(filename = None) :
         raise RuntimeError('File not successfully saved to disk: ' + filename)
       else: 
         logging.debug('File successfully saved to disk: ' + filename)
+        
+    logging.info('Image(s) saved to %s', shootInfo.filename)
+        
+  else:
+    # we're leaving the images on the camera. check if they were correctly captured. how?
+    curNumExistingImages = readNumImagesFromCamera()
+    
+    if (curNumExistingImages-prevExistingImages) != len(shootInfo.exposures):
+      raise RuntimeError('Not all images were captured on the camera!')
+    else:
+      logging.info('Image(s) saved to %s', shootInfo.folder) 
       
-    logging.info('Image(s) saved to %s', shootInfo.folder)
-  
+    
 def reset():
-  # use gphoto2's reset command (new with gphoto 2.5)
+  # use gphoto2's reset command (new with gphoto 2.5.2 and above)
   cmd = gphoto2Executable + ' --reset'
   run(cmd)
+  
+  run("killall PTPCamera")
 
 
 def initialize() :
@@ -105,12 +133,12 @@ def initialize() :
     run("killall gvfsd-gphoto2")
     run("killall gvfs-gphoto2-volume-monitor")
 
-    # Also, reset the usb to make sure everything works
-    reset()
-    
   else:
     # In Mac OSX, disable the PTPCamera process
     run("killall PTPCamera")
+    
+  # Also, reset the usb to make sure everything works
+  reset()
   
   # make sure picture mode is set to "faithful" (not sure if this affects RAW files...)
   # In our case, this should be equal to 5
