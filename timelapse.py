@@ -18,6 +18,8 @@ import sys
 import os
 from Shoot import Shoot
 
+from argparse import ArgumentParser
+
 import logging
 import sun
 
@@ -32,24 +34,18 @@ usbresetExecutable = '/home/pi/code/gphoto2-timelapse/usbreset'
 # setup logger
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', 
                     level=logging.DEBUG)
-    
-def usage():
-  """ Prints usage information """
-  print 'Usage: timelapse.py config.xml'
-  
-  
-if len(sys.argv) < 2:
-  # check if we're given an XML file.
-  usage()
-  
+
+parser = ArgumentParser()
+parser.add_argument("configFile", help="XML configuration file", type=file)
+parser.add_argument("-d", "--download", help="Download images on disk, don't actually capture", 
+                    action="store_true")
+parser.add_argument("--delete", help="When the 'download' option is enabled, this will also delete files from the folder", 
+                    action="store_true")
+args = parser.parse_args()
+
 # create a default Shoot object, read the XML file
 shootInfo = Shoot()
-shootInfo.fromXMLFile(sys.argv[1])
-
-# Display high-level information
-logging.info('Taking a total of %d shots, and waiting %s minutes between each shot', 
-            shootInfo.nbShots, str(shootInfo.delay))
-logging.info('Each shot will have %d exposure(s)', len(shootInfo.exposures))
+shootInfo.fromXMLFile(args.configFile)
 
 def run(cmd) :
   # try running the command once and if it fails, reset_camera
@@ -157,6 +153,28 @@ def initialize() :
   # capture full-resolution RAW files
   call = shootInfo.toGphotoInitCall(gphoto2Executable)
   run(call)
+  
+if args.download:
+  if shootInfo.downloadImages:
+    raise RuntimeError('Configuration file indicates that images should already be on disk')
+  
+  logging.info('Downloading files to disk from folder %s' % shootInfo.folder)
+
+  reset()
+  
+  cmd = gphoto2Executable + " --folder=" + shootInfo.folder + " --get-all-files --force-overwrite"
+  run(cmd)
+  
+  if args.delete:
+    cmd = gphoto2Executable + " --folder=" + shootInfo.folder + " --delete-all-files"
+    run(cmd)
+
+  sys.exit()
+
+# Display high-level information
+logging.info('Taking a total of %d shots, and waiting %s minutes between each shot', 
+            shootInfo.nbShots, str(shootInfo.delay))
+logging.info('Each shot will have %d exposure(s)', len(shootInfo.exposures))
   
 initialize()
 
