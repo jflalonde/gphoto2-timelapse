@@ -1,4 +1,4 @@
-<shoot filename="/home/pi/photos" folder="/store_00010001/DCIM/100EOS5D" nbShots="1" delay="1" ignoreSun="1" downloadImages="0" onPi="0" camera="Canon EOS 5D Mark III">
+<shoot filename="/home/pi/photos" folder="/store_00010001/DCIM/100EOS5D" nbShots="1" delay="1" ignoreSun="1" downloadImages="0" onPi="1" camera="Canon EOS 5D Mark III">
   <!-- Now the configuration to be set prior to each exposure --> 
   <exposure>
     <!-- First exposure needs this, not sure why -->
@@ -10,7 +10,7 @@
     <config name="/main/capturesettings/shutterspeed" value="1/1000" />
   </exposure>
   <exposure>
-    <config name="/main/capturesettings/shutterspeed" value="1/1250" />
+    <config name="/main/capturesettings/shutterspeed" value="1/125" />
   </exposure>
   <exposure>
     <config name="/main/capturesettings/aperture" value="4" />
