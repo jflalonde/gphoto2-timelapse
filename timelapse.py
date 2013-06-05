@@ -41,6 +41,8 @@ parser.add_argument("-d", "--download", help="Download images on disk, don't act
                     action="store_true")
 parser.add_argument("--delete", help="When the 'download' option is enabled, this will also delete files from the folder", 
                     action="store_true")
+parser.add_argument("-p", "--pi", help="Specifies that the program is run on the Raspberry Pi",
+                    action="store_true")
 args = parser.parse_args()
 
 # create a default Shoot object, read the XML file
@@ -123,7 +125,7 @@ def reset():
 def initialize() :
   logging.info('Initializing settings')
   
-  if shootInfo.onPi:
+  if args.pi:
     # If we're on the Pi, disable the gphoto2 daemon process
     run("killall gphoto2")
     run("killall gvfsd-gphoto2")

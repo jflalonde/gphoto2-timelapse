@@ -13,7 +13,7 @@ class Shoot(object):
 
   def __init__(self, folder = '/', filename = '', nbShots = float('inf'), delay = 1, 
                ignoreSun = True, exposures = [], initConfig = [], 
-               downloadImages = True, onPi = False, camera = ''):
+               downloadImages = True, camera = ''):
     """ Constructor """
     
     # shoot properties
@@ -37,9 +37,6 @@ class Shoot(object):
     
     # whether or not to download images
     self.downloadImages = downloadImages
-    
-    # whether we're on the Raspberry Pi or not
-    self.onPi = onPi
     
     # camera model
     self.camera = camera
@@ -70,10 +67,6 @@ class Shoot(object):
     downloadImagesAttributeNode = xmlElement.getAttributeNode('downloadImages')
     if downloadImagesAttributeNode != None:
       self.downloadImages = bool(int(downloadImagesAttributeNode.value))
-      
-    onPiAttributeNode = xmlElement.getAttributeNode('onPi')
-    if onPiAttributeNode != None:
-      self.onPi = bool(int(onPiAttributeNode.value))
       
     cameraAttributeNode = xmlElement.getAttributeNode('camera')
     if cameraAttributeNode != None:
