@@ -11,12 +11,13 @@ from datetime import datetime, timedelta
 class Shoot(object):
   """ Stores information relative to a shoot. See the file config-example.txt for valid XML files. """
 
-  def __init__(self, folder = '.', nbShots = float('inf'), delay = 1, 
+  def __init__(self, folder = '/', filename = '', nbShots = float('inf'), delay = 1, 
                ignoreSun = True, exposures = [], initConfig = [], 
                downloadImages = True, onPi = False):
     """ Constructor """
     
     # shoot properties
+    self.filename = filename
     self.folder = folder
     
     # number of exposure to take for each shot
@@ -43,6 +44,10 @@ class Shoot(object):
   def fromXMLElement(self, xmlElement):
     # read attributes from the note (if available)
     
+    filenameAttributeNode = xmlElement.getAttributeNode('filename')
+    if filenameAttributeNode != None:
+      self.filename = filenameAttributeNode.value
+
     folderAttributeNode = xmlElement.getAttributeNode('folder')
     if folderAttributeNode != None:
       self.folder = folderAttributeNode.value
@@ -113,7 +118,7 @@ class Shoot(object):
         call = call + "--capture-image-and-download "
         
         # set the filename
-        filename = os.path.join(self.folder, self.getFilename())
+        filename = os.path.join(self.filename, self.getFilename())
         filename = filename + "_%03n.cr2"
         call = call + "--filename " + filename + " "
         
@@ -122,7 +127,7 @@ class Shoot(object):
         filenames.append(filename)
 
       else:
-        call = call + "--capture-image "
+        call = call + "--folder " + self.folder + " --capture-image "
             
     return (call, filenames)
   
