@@ -23,8 +23,8 @@ class Shoot(object):
     # number of exposure to take for each shot
     self.nbShots = nbShots
     
-    # delay (in minutes) to wait in between shots
-    self.delay = timedelta(minutes = delay)
+    # delay (in seconds) to wait in between shots
+    self.delay = timedelta(seconds = delay)
     
     # whether to ignore the sun or not
     self.ignoreSun = bool(ignoreSun)
@@ -58,7 +58,7 @@ class Shoot(object):
       
     delayAttributeNode = xmlElement.getAttributeNode('delay')
     if delayAttributeNode != None:
-      self.delay = timedelta(minutes = int(delayAttributeNode.value));
+      self.delay = timedelta(seconds = int(delayAttributeNode.value));
       
     ignoreSunAttributeNode = xmlElement.getAttributeNode('ignoreSun')
     if ignoreSunAttributeNode != None:

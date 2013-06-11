@@ -33,13 +33,13 @@ usbresetExecutable = '/home/pi/code/gphoto2-timelapse/usbreset'
 
 # setup logger
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', 
-                    level=logging.DEBUG)
+                    level=logging.INFO)
 
 parser = ArgumentParser()
 parser.add_argument("configFile", help="XML configuration file", type=file)
 parser.add_argument("-d", "--download", help="Download images on disk, don't actually capture", 
                     action="store_true")
-parser.add_argument("--delete", help="When the 'download' option is enabled, this will also delete files from the folder", 
+parser.add_argument("--delete", help="When the 'download' option is enabled, this will also delete files OBfrom the folder", 
                     action="store_true")
 parser.add_argument("-p", "--pi", help="Specifies that the program is run on the Raspberry Pi",
                     action="store_true")
@@ -152,7 +152,7 @@ def initialize() :
     raise RuntimeError('Camera needs to be set in "Manual" mode')
   logging.info('Camera in manual mode')
     
-  # capture full-resolution RAW files
+  # set initialization configuration
   call = shootInfo.toGphotoInitCall(gphoto2Executable)
   run(call)
   
@@ -174,7 +174,7 @@ if args.download:
   sys.exit()
 
 # Display high-level information
-logging.info('Taking a total of %d shots, and waiting %s minutes between each shot', 
+logging.info('Taking a total of %d shots, and waiting %s between each shot', 
             shootInfo.nbShots, str(shootInfo.delay))
 logging.info('Each shot will have %d exposure(s)', len(shootInfo.exposures))
   
