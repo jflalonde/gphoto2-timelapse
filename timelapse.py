@@ -43,11 +43,21 @@ parser.add_argument("--delete", help="When the 'download' option is enabled, thi
                     action="store_true")
 parser.add_argument("-p", "--pi", help="Specifies that the program is run on the Raspberry Pi",
                     action="store_true")
+parser.add_argument("-n", "--num-shots", help="Number of shots to capture (overrides XML file)", 
+                    type=int)
+parser.add_argument("-w", "--wait", help="Delay between shots in seconds (overrides XML file)",
+                    type=int)
 args = parser.parse_args()
 
 # create a default Shoot object, read the XML file
 shootInfo = Shoot()
 shootInfo.fromXMLFile(args.configFile)
+
+if args.num_shots != None:
+  shootInfo.nbShots = args.num_shots
+  
+if args.wait != None:
+  shootInfo.delay = args.wait
 
 def run(cmd) :
   # try running the command once and if it fails, reset_camera
