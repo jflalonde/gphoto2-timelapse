@@ -11,7 +11,7 @@ TODO:
   directly instead of waiting by increments of 1 minute)
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 import subprocess
 import sys
@@ -57,7 +57,7 @@ if args.num_shots != None:
   shootInfo.nbShots = args.num_shots
   
 if args.wait != None:
-  shootInfo.delay = args.wait
+  shootInfo.delay = timedelta(seconds = args.wait)
 
 def run(cmd) :
   # try running the command once and if it fails, reset_camera
