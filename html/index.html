@@ -14,6 +14,8 @@
 <button type="button" id="killButton">Die!</button>
 <br/>
 <button type="button" id="controlButton">Shoot!</button>
+<br/>
+<button type="button" id="timelapseButton">Timelapse</button>
 </form>
 
 <div id="success">Success!</div>
@@ -77,6 +79,35 @@
         $('#controlButton').show();
       } else {
         $('#cameraResponse').html("Initialization failed.");
+      } 
+    }
+  });
+
+  return false;
+  });
+  
+  /* Callback for timelapse button */
+  $('#timelapseButton').click(function() {
+  $('#timelapseButton').hide();
+  $('#controlButton').hide();
+
+  $('#success').hide();
+  $('#failure').hide();
+
+  $('#cameraResponse').html("Capturing timelapse...");
+
+  $.ajax(
+  {
+    type: "POST",
+    url: "../cgi-bin/test.py",
+    data: "input=timelapse",
+    success: function(response)
+    {
+      if (response.indexOf("successful!") != -1) {
+        $('#cameraResponse').html("Timelapse done.");
+        $('#timelapseButton').show();
+      } else {
+        $('#cameraResponse').html("Timelapse failed.");
       } 
     }
   });
