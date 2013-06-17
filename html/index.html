@@ -61,6 +61,7 @@
   $('#initButton').click(function() {
   $('#initButton').hide();
   $('#controlButton').hide();
+  $('#timelapseButton').hide();
 
   $('#success').hide();
   $('#failure').hide();
@@ -77,6 +78,7 @@
       if (response.indexOf("successful!") != -1) {
         $('#cameraResponse').html("Initialization successful.");
         $('#controlButton').show();
+        $('#timelapseButton').show();
       } else {
         $('#cameraResponse').html("Initialization failed.");
       } 
@@ -107,7 +109,7 @@
         $('#cameraResponse').html("Timelapse done.");
         $('#timelapseButton').show();
       } else {
-        $('#cameraResponse').html("Timelapse failed.");
+        $('#cameraResponse').html(response.replace(/(\r\n|\n|\r)/gm, "<br/>"));
       } 
     }
   });

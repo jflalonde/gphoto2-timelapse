@@ -32,10 +32,10 @@ elif jquery_input == "shoot":
 elif jquery_input == "timelapse":
     # use the main XML file, but over-ride the delay and number of shots
     xmlFile = xmlShoot
-    cmd = "/home/pi/code/gphoto2-timelapse/timelapse.py --pi --delay " + str(15*60) + " --num_shots " + str(1000) + " " + xmlFile
+    cmd = "/home/pi/code/gphoto2-timelapse/timelapse.py --pi --wait " + str(15*60) + " --num-shots " + str(1000) + " " + xmlFile
 
 else: # kill
-    cmd = "killall gphoto2"
+    cmd = "killall gphoto2; killall python"
 
 
 # launch the command
