@@ -31,9 +31,24 @@ gphoto2Executable = 'export LD_LIBRARY_PATH=/usr/local/lib; gphoto2'
 # specify the (full) path to the 'usbreset' executable
 usbresetExecutable = '/home/pi/code/gphoto2-timelapse/usbreset'
 
-# setup logger
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', 
-                    level=logging.INFO)
+# Setup logger
+logger = logging.getLogger('Capture')
+logger.setLevel(logging.DEBUG)
+
+# create formatter
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+# create handlers
+streamHandler = logging.StreamHandler()
+streamHandler.setLevel(logging.INFO)
+streamHandler.setFormatter(formatter)
+
+fileHandler = logging.FileHandler('capture.log', mode='a')
+fileHandler.setLevel(logging.DEBUG)
+fileHandler.setFormatter(formatter)
+
+logger.addHandler(streamHandler)
+logger.addHandler(fileHandler)
 
 parser = ArgumentParser()
 parser.add_argument("configFile", help="XML configuration file", type=file)
@@ -62,7 +77,7 @@ if args.wait != None:
 def run(cmd) :
   # try running the command once and if it fails, reset_camera
   # and then try once more
-  logging.debug("running %s" % cmd)
+  logger.debug("running %s" % cmd)
     
   if not DEBUG: 
     p = subprocess.Popen(cmd, shell=True,
@@ -89,7 +104,7 @@ def readNumImagesFromCamera() :
   cmd = gphoto2Executable + " --folder=" + shootInfo.folder + " --num-files --quiet"
   numExistingImages = int(run(cmd))
   
-  logging.debug("Found %d images on the folder %s" % (numExistingImages, shootInfo.folder))
+  logger.debug("Found %d images on the folder %s" % (numExistingImages, shootInfo.folder))
   
   return numExistingImages
 
@@ -99,7 +114,7 @@ def takeShot(filename = None) :
   if not shootInfo.downloadImages:
     prevExistingImages = readNumImagesFromCamera()
   
-  logging.info('Taking %d exposure(s)', len(shootInfo.exposures))
+  logger.info('Taking %d exposure(s)', len(shootInfo.exposures))
   (call, filenames) = shootInfo.toGphotoCaptureCall(gphoto2Executable)
   
   run(call)
@@ -110,9 +125,9 @@ def takeShot(filename = None) :
       if not os.path.exists(filename):
         raise RuntimeError('File not successfully saved to disk: ' + filename)
       else: 
-        logging.debug('File successfully saved to disk: ' + filename)
+        logger.debug('File successfully saved to disk: ' + filename)
         
-    logging.info('Image(s) saved to %s', shootInfo.filename)
+    logger.info('Image(s) saved to %s', shootInfo.filename)
         
   else:
     # we're leaving the images on the camera. check if they were correctly captured. how?
@@ -121,7 +136,7 @@ def takeShot(filename = None) :
     if (curNumExistingImages-prevExistingImages) != len(shootInfo.exposures):
       raise RuntimeError('Not all images were captured on the camera!')
     else:
-      logging.info('Image(s) saved to %s', shootInfo.folder) 
+      logger.info('Image(s) saved to %s', shootInfo.folder) 
       
     
 def reset():
@@ -133,7 +148,7 @@ def reset():
 
 
 def initialize() :
-  logging.info('Initializing settings')
+  logger.info('Initializing settings')
   
   if args.pi:
     # If we're on the Pi, disable the gphoto2 daemon process
@@ -154,13 +169,13 @@ def initialize() :
   #out = run(gphoto2Executable + " --get-config /main/capturesettings/picturestyle")
   #if not 'Current: Faithful' in out:
   #  raise RuntimeError('Camera needs to be set in the "Faithful" picture style')
-  #logging.info('Camera in the faithful picture style')
+  #logger.info('Camera in the faithful picture style')
   
   # we should also check whether we are in 'M' mode 
   out = run(gphoto2Executable + " --get-config /main/capturesettings/autoexposuremode")
   if not 'Current: Manual' in out:
     raise RuntimeError('Camera needs to be set in "Manual" mode')
-  logging.info('Camera in manual mode')
+  logger.info('Camera in manual mode')
     
   # set initialization configuration
   call = shootInfo.toGphotoInitCall(gphoto2Executable)
@@ -170,7 +185,7 @@ if args.download:
   if shootInfo.downloadImages:
     raise RuntimeError('Configuration file indicates that images should already be on disk')
   
-  logging.info('Downloading files to disk from folder %s' % shootInfo.folder)
+  logger.info('Downloading files to disk from folder %s' % shootInfo.folder)
 
   reset()
   
@@ -184,9 +199,9 @@ if args.download:
   sys.exit()
 
 # Display high-level information
-logging.info('Taking a total of %d shots, and waiting %s between each shot', 
+logger.info('Taking a total of %d shots, and waiting %s between each shot', 
             shootInfo.nbShots, str(shootInfo.delay))
-logging.info('Each shot will have %d exposure(s)', len(shootInfo.exposures))
+logger.info('Each shot will have %d exposure(s)', len(shootInfo.exposures))
   
 initialize()
 
@@ -201,7 +216,7 @@ while nbShots < shootInfo.nbShots:
     takeShot()
     nbShots += 1
   else :
-    logging.info('Waiting for the sun to come out')
+    logger.info('Waiting for the sun to come out')
   
   if nbShots < shootInfo.nbShots:
     # wait only if we still need to shoot
@@ -212,8 +227,8 @@ while nbShots < shootInfo.nbShots:
       # wait only if the delay is larger than the time it took to take the shot (gphoto2 can be quite slow)
       waitTime = shootInfo.delay - tDelay
     
-      logging.info('Waiting ' + str(waitTime.seconds) + 's...')
+      logger.info('Waiting ' + str(waitTime.seconds) + 's...')
       time.sleep(waitTime.seconds)
       
-logging.info('All done!')
+logger.info('All done!')
     
