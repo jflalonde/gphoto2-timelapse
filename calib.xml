@@ -1,0 +1,11 @@
+<shoot folder="/store_00010001/DCIM/100EOS5D" nbShots="20" delay="5" ignoreSun="1" downloadImages="0" camera="Canon EOS 5D Mark III">
+  <!-- Now the configuration to be set prior to each exposure --> 
+  <init>
+    <config name="/main/imgsettings/imageformat" value="2" /> <!-- Medium JPEG -->
+  </init>
+  <exposure>
+    <!-- First exposure needs this, not sure why -->
+    <config name="/main/settings/capturetarget" value="1" /> <!-- Save image on card -->
+    <config name="/main/capturesettings/aperture" value="16" />
+  </exposure>
+</shoot>
