@@ -26,10 +26,7 @@ import sun
 DEBUG = False
 
 # specify the path to the gphoto2 executable
-gphoto2Executable = 'export LD_LIBRARY_PATH=/usr/local/lib; gphoto2'
-
-# specify the (full) path to the 'usbreset' executable
-usbresetExecutable = '/home/pi/code/gphoto2-timelapse/usbreset'
+gphoto2Executable = 'export LD_LIBRARY_PATH=/usr/local/lib; /usr/local/bin/gphoto2'
 
 # Setup logger
 logger = logging.getLogger('Capture')
@@ -43,12 +40,7 @@ streamHandler = logging.StreamHandler()
 streamHandler.setLevel(logging.INFO)
 streamHandler.setFormatter(formatter)
 
-fileHandler = logging.FileHandler('capture.log', mode='a')
-fileHandler.setLevel(logging.DEBUG)
-fileHandler.setFormatter(formatter)
-
 logger.addHandler(streamHandler)
-logger.addHandler(fileHandler)
 
 parser = ArgumentParser()
 parser.add_argument("configFile", help="XML configuration file", type=file)
@@ -62,7 +54,21 @@ parser.add_argument("-n", "--num-shots", help="Number of shots to capture (overr
                     type=int)
 parser.add_argument("-w", "--wait", help="Delay between shots in seconds (overrides XML file)",
                     type=int)
+parser.add_argument("-i", "--initial-wait", help="Wait before doing anything (in seconds)", type=int, dest="initialWait")
+parser.add_argument("-l", "--log", help="Log file", dest="logFilename")
 args = parser.parse_args()
+
+# Must we wait before starting?
+if args.initialWait != None:
+  time.sleep(args.initialWait)
+
+# create file handler
+if args.logFilename != None:
+  fileHandler = logging.FileHandler(args.logFilename, mode='a')
+  fileHandler.setLevel(logging.DEBUG)
+  fileHandler.setFormatter(formatter)
+  
+  logger.addHandler(fileHandler)
 
 # create a default Shoot object, read the XML file
 shootInfo = Shoot()
